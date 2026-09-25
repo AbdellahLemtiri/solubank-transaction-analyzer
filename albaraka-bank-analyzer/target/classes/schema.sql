@@ -1,22 +1,32 @@
--- DDL for Client, Compte, Transaction tables
-CREATE TABLE Client (
-    id SERIAL PRIMARY KEY,
-    nom VARCHAR(100),
-    email VARCHAR(100)
+DROP TABLE IF EXISTS "Transaction" CASCADE;
+DROP TABLE IF EXISTS "Compte" CASCADE;
+DROP TABLE IF EXISTS "Client" CASCADE;
+
+CREATE TABLE "Client" (
+    id BIGSERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL
 );
 
-CREATE TABLE Compte (
-    id SERIAL PRIMARY KEY,
-    type_compte VARCHAR(50),
-    solde DECIMAL(15,2),
-    client_id INT REFERENCES Client(id)
+CREATE TABLE "Compte" (
+    id BIGSERIAL PRIMARY KEY,
+    numero VARCHAR(50) UNIQUE NOT NULL,
+    solde DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    type_compte VARCHAR(20) NOT NULL   (type_compte IN ('COURANT', 'EPARGNE')),
+    decouvert_autorise DOUBLE PRECISION DEFAULT 0.0,
+    taux_interet DOUBLE PRECISION DEFAULT 0.0,
+    id_client BIGINT NOT NULL,
+    CONSTRAINT fk_compte_client FOREIGN KEY (id_client) 
+        REFERENCES "Client"(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Transaction (
-    id SERIAL PRIMARY KEY,
-    date TIMESTAMP,
-    montant DECIMAL(15,2),
-    type VARCHAR(50),
-    lieu VARCHAR(100),
-    compte_id INT REFERENCES Compte(id)
+CREATE TABLE "Transaction" (
+    id BIGSERIAL PRIMARY KEY,
+    date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    montant DOUBLE PRECISION NOT NULL CHECK (montant > 0),
+    type VARCHAR(20) NOT NULL CHECK (type IN ('VERSEMENT', 'RETRAIT', 'VIREMENT')),
+    lieu VARCHAR(100) NOT NULL,
+    id_compte BIGINT NOT NULL,
+    CONSTRAINT fk_transaction_compte FOREIGN KEY (id_compte) 
+        REFERENCES "Compte"(id) ON DELETE CASCADE
 );
