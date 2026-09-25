@@ -10,11 +10,11 @@ public interface ClientDAO {
 
     boolean update(Client client);
 
-    boolean delet(Long id);
+    boolean delete(Long id);
 
-    Optional<Client> findById();
+    Optional<Client> findById(Long id);
 
-    List<Client> findByNom();
+    List<Client> findByNom(String nom);
 
     List<Client> findAll();
 }
