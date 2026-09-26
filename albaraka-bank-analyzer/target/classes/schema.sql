@@ -12,7 +12,7 @@ CREATE TABLE "Compte" (
     id BIGSERIAL PRIMARY KEY,
     numero VARCHAR(50) UNIQUE NOT NULL,
     solde DOUBLE PRECISION NOT NULL DEFAULT 0.0,
-    type_compte VARCHAR(20) NOT NULL   (type_compte IN ('COURANT', 'EPARGNE')),
+    type_compte VARCHAR(20) NOT NULL CHECK (type_compte IN ('COURANT', 'EPARGNE')),
     decouvert_autorise DOUBLE PRECISION DEFAULT 0.0,
     taux_interet DOUBLE PRECISION DEFAULT 0.0,
     id_client BIGINT NOT NULL,

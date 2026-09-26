@@ -3,9 +3,6 @@ package com.solubank.service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.solubank.dao.CompteDAO;
 import com.solubank.dao.TransactionDAO;
@@ -34,7 +31,8 @@ public class TransactionService {
         compte.setSolde(compte.getSolde() + montant);
         compteDAO.update(compte);
 
-        var transaction = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VERSEMENT, lieu, compteId);
+        var transaction = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VERSEMENT, lieu,
+                compteId);
         return transactionDAO.save(transaction);
     }
 
@@ -69,8 +67,10 @@ public class TransactionService {
         compteDAO.update(source);
         compteDAO.update(destination);
 
-        var transSource = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VIREMENT, lieu + " (Débit)", compteSourceId);
-        var transDest = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VIREMENT, lieu + " (Crédit)", compteDestId);
+        var transSource = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VIREMENT,
+                lieu + " (Débit)", compteSourceId);
+        var transDest = new Transaction(null, LocalDateTime.now(), montant, TypeTransaction.VIREMENT,
+                lieu + " (Crédit)", compteDestId);
 
         transactionDAO.save(transSource);
         transactionDAO.save(transDest);
@@ -83,7 +83,8 @@ public class TransactionService {
             }
         } else if (compte instanceof CompteEpargne) {
             if (compte.getSolde() < montant) {
-                throw new SoldeInsuffisantException("Solde insuffisant : aucun découvert n'est permis sur un compte épargne.");
+                throw new SoldeInsuffisantException(
+                        "Solde insuffisant : aucun découvert n'est permis sur un compte épargne.");
             }
         }
     }
@@ -94,27 +95,12 @@ public class TransactionService {
                 .toList();
     }
 
-    public List<Transaction> filtrerTransactions(Predicate<Transaction> critere) {
-        return transactionDAO.findAll().stream()
-                .filter(critere)
-                .toList();
+    public double calculerTotalParCompte(Long id) {
+        return transactionDAO.findByCompteId(id).stream().mapToDouble(Transaction::montant).sum();
     }
 
-    public Map<TypeTransaction, List<Transaction>> regrouperParType() {
-        return transactionDAO.findAll().stream()
-                .collect(Collectors.groupingBy(Transaction::type));
+    public double calculerMoyenneParCompte(Long id) {
+        return transactionDAO.findByCompteId(id).stream().mapToDouble(Transaction::montant).average().orElse(0.0);
     }
 
-    public Double calculerTotalParCompte(Long compteId) {
-        return transactionDAO.findByCompteId(compteId).stream()
-                .mapToDouble(Transaction::montant)
-                .sum();
-    }
-
-    public Double calculerMoyenneParCompte(Long compteId) {
-        return transactionDAO.findByCompteId(compteId).stream()
-                .mapToDouble(Transaction::montant)
-                .average()
-                .orElse(0.0);
-    }
-}
+}   

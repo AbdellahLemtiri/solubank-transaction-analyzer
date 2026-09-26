@@ -14,10 +14,10 @@ import com.solubank.exception.ResourceNotFoundException;
 public class CompteService {
 
     private final CompteDAO compteDAO;
-    private final ClientDAO clientDAO;
+    
 
     public CompteService(CompteDAO compteDAO, ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+       
         this.compteDAO = compteDAO;
     }
 
@@ -55,5 +55,9 @@ public class CompteService {
 
     }
 
-    
+    public Optional<Compte> getCompteSoldeMax() {
+        return compteDAO.findAll().stream().max(Comparator.comparingDouble(Compte::getSolde));
+
+    }
+
 }

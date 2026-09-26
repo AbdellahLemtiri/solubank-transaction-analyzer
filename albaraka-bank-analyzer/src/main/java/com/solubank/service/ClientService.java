@@ -18,7 +18,7 @@ public class ClientService {
         this.compteDAO = compteDAO;
     }
 
-    public Client Ajouter(String nom, String email) {
+    public Client ajouter(String nom, String email) {
         Client client = new Client(null, nom, email);
         return clientDAO.save(client);
     }
@@ -33,7 +33,7 @@ public class ClientService {
         return clientDAO.delete(id);
     }
 
-    public List<Client> rechercherParNom(String nom) {
+    public List<Client> trouverParNom(String nom) {
         return clientDAO.findByNom(nom);
     }
 
@@ -50,7 +50,7 @@ public class ClientService {
         return compteDAO.findByClientId(id).stream().mapToDouble(Compte::getSolde).sum();
     }
 
-    public int getNombreDeClient(Long id) {
+    public int getNombreComptesClient(Long id) {
         return compteDAO.findByClientId(id).size();
     }
 

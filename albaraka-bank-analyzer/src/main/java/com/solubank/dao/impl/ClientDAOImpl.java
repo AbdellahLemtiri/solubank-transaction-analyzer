@@ -17,7 +17,7 @@ public class ClientDAOImpl implements ClientDAO {
 
     @Override
     public Client save(Client client) {
-        String sql_request = "INSERT INTO \"Client\" (nom,email) VALUE (?,?) RETURINING id";
+        String sql_request = "INSERT INTO \"Client\" (nom,email) VALUES (?,?) RETURNING id";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql_request)) {
@@ -47,7 +47,7 @@ public class ClientDAOImpl implements ClientDAO {
             ps.setString(1, client.nom());
             ps.setString(2, client.email());
             ps.setLong(3, client.id());
-            return ps.executeUpdate() > 1;
+            return ps.executeUpdate() > 0;
         } catch (SQLException es) {
             throw new RuntimeException("information non modifie", es);
         }
@@ -56,11 +56,11 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
 
     public boolean delete(Long id) {
-        String sql_request = "DELETE FORM \"Client\" WHERE id = ?";
+        String sql_request = "DELETE FROM \"Client\" WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql_request)) {
             ps.setLong(1, id);
-            return ps.executeUpdate() > 1;
+            return ps.executeUpdate() > 0;
         } catch (SQLException es) {
             throw new RuntimeException("Erreur lors de la suppression du client ", es);
 
