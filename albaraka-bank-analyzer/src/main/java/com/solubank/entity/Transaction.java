@@ -3,16 +3,15 @@ package com.solubank.entity;
 import java.time.LocalDateTime;
 
 import com.solubank.entity.enums.TypeTransaction;
- 
+
 public record Transaction(
         Long id,
         LocalDateTime date,
         Double montant,
         TypeTransaction type,
         String lieu,
-        Long idCompte
-) {
-     
+        Long idCompte) {
+
     public Transaction {
         if (montant == null || montant <= 0) {
             throw new IllegalArgumentException("Le montant de la transaction doit être strictement positif.");

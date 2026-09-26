@@ -30,7 +30,13 @@ public class RapportService {
     }
 
     public List<Map.Entry<Client, Double>> getTop5ClientsParSolde() {
-       
+        
+        Map<Long, Double> totalSoldeParCompte = compteDAO.findAll().stream().collect(Collectors.groupingBy(
+                Compte::getIdClient, Collectors.summingDouble(Compte::getSolde)));
+
+        return clientDAO.findAll().stream().map(client -> Map.entry(
+                client, totalSoldeParCompte.getOrDefault(client.id(), 0.0)))
+                .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue())).limit(5).toList();
     }
 
     public Map<TypeTransaction, Double> getRapportMensuelVolume(int annee, int mois) {
@@ -38,8 +44,7 @@ public class RapportService {
                 .filter(t -> t.date().getYear() == annee && t.date().getMonthValue() == mois)
                 .collect(Collectors.groupingBy(
                         Transaction::type,
-                        Collectors.summingDouble(Transaction::montant)
-                ));
+                        Collectors.summingDouble(Transaction::montant)));
     }
 
     public List<Transaction> detecterMontantsSuspects(Double seuil) {

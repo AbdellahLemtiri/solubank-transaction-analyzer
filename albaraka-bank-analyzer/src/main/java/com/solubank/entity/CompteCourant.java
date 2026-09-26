@@ -1,5 +1,7 @@
 package com.solubank.entity;
+
 import com.solubank.entity.enums.TypeCompte;
+
 public final class CompteCourant extends Compte {
 
     private Double decouvertAutorise;

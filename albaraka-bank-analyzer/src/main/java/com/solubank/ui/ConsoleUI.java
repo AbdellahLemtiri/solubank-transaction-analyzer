@@ -59,7 +59,7 @@ public class ConsoleUI {
 
     private void afficherMenuPrincipal() {
         System.out.println("\n=======================================================");
-        System.out.println("       BANQUE AL BARAKA - ANALYSE & MONITORING         ");
+        System.out.println("                 BANQUE AL BARAKA                       ");
         System.out.println("=======================================================");
         System.out.println("1. Gestion des Clients");
         System.out.println("2. Gestion des Comptes");
@@ -153,7 +153,7 @@ public class ConsoleUI {
                 case "1" -> {
                     System.out.print("Identifiant du client titulaire : ");
                     Long clientId = Long.parseLong(scanner.nextLine().trim());
-                    System.out.print("Numéro de compte (ex: CC-1001) : ");
+                    System.out.print("Numéro de compte : ");
                     String numero = scanner.nextLine().trim();
                     System.out.print("Solde initial : ");
                     Double solde = Double.parseDouble(scanner.nextLine().trim());
@@ -166,7 +166,7 @@ public class ConsoleUI {
                 case "2" -> {
                     System.out.print("Identifiant du client titulaire : ");
                     Long clientId = Long.parseLong(scanner.nextLine().trim());
-                    System.out.print("Numéro de compte (ex: CE-2001) : ");
+                    System.out.print("Numéro de compte : ");
                     String numero = scanner.nextLine().trim();
                     System.out.print("Solde initial : ");
                     Double solde = Double.parseDouble(scanner.nextLine().trim());
@@ -221,7 +221,7 @@ public class ConsoleUI {
                     Long compteId = Long.parseLong(scanner.nextLine().trim());
                     System.out.print("Montant à verser : ");
                     Double montant = Double.parseDouble(scanner.nextLine().trim());
-                    System.out.print("Lieu de l'opération (ex: Casablanca) : ");
+                    System.out.print("Lieu de l'opération  : ");
                     String lieu = scanner.nextLine().trim();
 
                     Transaction t = transactionService.effectuerVersement(compteId, montant, lieu);
@@ -269,7 +269,7 @@ public class ConsoleUI {
         } catch (SoldeInsuffisantException | ResourceNotFoundException e) {
             System.err.println("Avertissement métier : " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Erreur technique : " + e.getMessage());
+            System.err.println("Erreur  : " + e.getMessage());
         }
     }
 
@@ -292,7 +292,7 @@ public class ConsoleUI {
             switch (choix) {
                 case "1" -> {
                     List<Map.Entry<Client, Double>> top5 = rapportService.getTop5ClientsParSolde();
-                    System.out.println("\n--- TOP 5 DES CLIENTS (Solde Total) ---");
+                    System.out.println("\n--- TOP 5 DES CLIENTS  ---");
                     int rang = 1;
                     for (var entry : top5) {
                         System.out.printf("%d. [ID: %d] %-20s | Solde Global: %.2f DH%n",
@@ -300,7 +300,7 @@ public class ConsoleUI {
                     }
                 }
                 case "2" -> {
-                    System.out.print("Année (ex: 2026) : ");
+                    System.out.print("Année : ");
                     int annee = Integer.parseInt(scanner.nextLine().trim());
                     System.out.print("Mois (1 à 12) : ");
                     int mois = Integer.parseInt(scanner.nextLine().trim());
@@ -310,7 +310,7 @@ public class ConsoleUI {
                     volumes.forEach((type, total) -> System.out.printf("- %-12s : %.2f DH%n", type, total));
                 }
                 case "3" -> {
-                    System.out.print("Définir le seuil d'alerte en DH (ex: 10000) : ");
+                    System.out.print("Définir le seuil d'alerte en DH : ");
                     Double seuil = Double.parseDouble(scanner.nextLine().trim());
                     List<Transaction> suspects = rapportService.detecterMontantsSuspects(seuil);
                     if (suspects.isEmpty()) {
@@ -324,7 +324,7 @@ public class ConsoleUI {
                 case "4" -> {
                     System.out.print("Identifiant du compte à auditer : ");
                     Long compteId = Long.parseLong(scanner.nextLine().trim());
-                    System.out.print("Lieu habituel du client (ex: Safi) : ");
+                    System.out.print("Lieu habituel du client : ");
                     String lieuHabituel = scanner.nextLine().trim();
 
                     List<Transaction> insolites = rapportService.detecterLieuxInhabituels(compteId, lieuHabituel);
@@ -341,7 +341,7 @@ public class ConsoleUI {
                     Long compteId = Long.parseLong(scanner.nextLine().trim());
                     List<Transaction> rafal = rapportService.detecterFrequenceExcessive(compteId);
                     if (rafal.isEmpty()) {
-                        System.out.println("Comportement normal : aucune opération rapprochée (< 60s).");
+                        System.out.println("Comportement normal : aucune opération rapprochée .");
                     } else {
                         System.out.println("ALERTE SUSPICION DE FRAUDE (Opérations en rafale < 1 min) :");
                         rafal.forEach(t -> System.out.printf("! Réf: %d | Date: %s | Montant: %.2f DH%n",
@@ -349,7 +349,7 @@ public class ConsoleUI {
                     }
                 }
                 case "6" -> {
-                    System.out.print("Période d'inactivité minimale en mois (ex: 6) : ");
+                    System.out.print("Période d'inactivité minimale en mois : ");
                     int mois = Integer.parseInt(scanner.nextLine().trim());
                     List<Compte> inactifs = rapportService.identifierComptesInactifs(mois);
                     if (inactifs.isEmpty()) {
